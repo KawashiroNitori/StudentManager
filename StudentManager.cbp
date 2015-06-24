@@ -31,7 +31,15 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
-		<Unit filename="main.c">
+		<Unit filename="src/RBTree/core/RBTree.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/RBTree/include/RBTree.h" />
+		<Unit filename="src/Student/core/Student.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/Student/include/Student.h" />
+		<Unit filename="src/main/core/main.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Extensions>
