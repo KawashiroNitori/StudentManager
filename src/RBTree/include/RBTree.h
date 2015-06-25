@@ -8,6 +8,11 @@ typedef enum ColorType
 	Red,Black
 }ColorType;
 
+typedef enum SortMode
+{
+    ID,Name
+}SortMode;
+
 typedef struct RBTreeNode
 {
 	struct RBTreeNode* parent;
@@ -31,7 +36,17 @@ void RightRotate(RBTree* Tree,RBTreeNode* x);
 
 void InsertFixup(RBTree* Tree,RBTreeNode* node);
 
-void Insert(RBTree* Tree,Student* data);
+int Insert(RBTree* Tree,Student* data,SortMode mode);
+
+RBTreeNode* Successor(RBTree* Tree,RBTreeNode* node);
+
+void DeleteFixup(RBTree* Tree,RBTreeNode* node);
+
+void Delete(RBTree* Tree,RBTreeNode* node);
+
+RBTreeNode* SearchByID(RBTree Tree,unsigned int ID);
+
+int SearchByName(RBTree Tree,wchar_t* Name,RBTreeNode** ResultArray);
 
 #endif
 

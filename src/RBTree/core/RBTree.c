@@ -1,5 +1,8 @@
 #include "../../Student/include/Student.h"
 #include "../include/RBTree.h"
+#include <stdlib.h>
+#include <string.h>
+#include <wchar.h>
 
 RBTreeNode* getParent(RBTreeNode* node)
 {
@@ -107,20 +110,222 @@ void InsertFixup(RBTree* Tree,RBTreeNode* node)
 			}
 		}
 	}
-	//Tree->color=Black;
+	(*Tree)->color=Black;
 }
 
-void Insert(RBTree* Tree,Student* data)
+int Insert(RBTree* Tree,Student* Stu,SortMode mode)
 {
-	if (Tree==NULL)
-	{
+    RBTreeNode *node,*p,*curNode;
+    node=(RBTreeNode*)malloc(sizeof(RBTreeNode));
+    if (node==NULL)
+        return -1;  //error:get memory failed
+    node->data=Stu;
+    node->left=nil;
+    node->right=nil;
+    node->color=Red;
+    curNode=*Tree;
+    p=nil;
+    while (curNode!=nil)
+    {
+        p=curNode;
+        switch (mode)
+        {
+        case ID:
+            if (Stu->ID <= p->data->ID)
+                curNode=curNode->left;
+            else if (Stu->ID > p->data->ID)
+                curNode=curNode->right;
+            else
+                return -2;  //error:duplicate ID
+            break;
+        case Name:
+            if (wcscmp(Stu->Name,p->data->Name)<=0)
+                curNode=curNode->left;
+            else
+                curNode=curNode->right;
+            break;
+        };
+    }
+    if (p==nil)
+        *Tree=node;
+    else
+    {
+        switch (mode)
+        {
+        case ID:
+            if (Stu->ID < p->data->ID)
+                p->left=node;
+            else if (Stu->ID > p->data->ID)
+                p->right=node;
+            else
+                return -2;  //error:duplicate ID
+            break;
+        case Name:
+            if (wcscmp(Stu->Name,p->data->Name)<=0)
+                p->left=node;
+            else
+                p->right=node;
+            break;
+        };
+    }
 
-	}
+    node->parent=p;
+    InsertFixup(Tree,node);
+    return 0;
 }
 
+RBTreeNode* Successor(RBTree* Tree,RBTreeNode* node)
+{
+    if (node->right!=nil)
+    {
+        RBTreeNode* p=nil;
+        RBTreeNode* q=node->right;
+        while (p->left!=nil)
+        {
+            q=p;
+            p=p->left;
+        }
+        return q;
+    }
+    else
+    {
+        RBTreeNode* y=node->parent;
+        while (y!=nil && node==y->right)
+        {
+            node=y;
+            y=y->parent;
+        }
+        return y;
+    }
+}
 
+void DeleteFixup(RBTree* Tree,RBTreeNode* node)
+{
+    while (node!=*Tree && node->color==Black)
+    {
+        if (node==node->parent->left)
+        {
+            RBTreeNode* w=node->parent->right;  //brother node
+            if (w->color==Red)
+            {
+                w->color=Black;
+                node->parent->color=Red;
+                LeftRotate(Tree,node->parent);
+                w=node->parent->right;
+            }
+            if (w->left->color==Black && w->right->color==Black)    //case 2:both child are black
+            {
+                w->color=Red;
+                node=node->parent;
+            }
+            else if (w->right->color==Black)    //case 3:left child is red,right child is black
+            {
+                w->color=Red;
+                w->left->color=Black;
+                RightRotate(Tree,w);
+                w=node->parent->right;
+            }
+            w->color=node->parent->color;   //case 4:right child is red;
+            node->parent->color=Black;
+            w->right->color=Black;
+            LeftRotate(Tree,node->parent);
+            node=*Tree;
+        }
+        else
+        {
+            RBTreeNode* w=node->parent->left;
+            if (w->color==Red)
+            {
+                w->color=Black;
+                node->parent->color=Red;
+                RightRotate(Tree,node->parent);
+                w=node->parent->left;
+            }
+            if (w->left->color==Black && w->right->color==Black)
+            {
+                w->color=Red;
+                node=node->parent;
+            }
+            else if (w->left->color==Black)
+            {
+                w->color=Red;
+                w->right->color=Black;
+                LeftRotate(Tree,w);
+                w=node->parent->left;
+            }
+            w->color=node->parent->color;
+            node->parent->color=Black;
+            w->left->color=Black;
+            RightRotate(Tree,node->parent);
+            node=*Tree;
+        }
+    }
+    node->color=Black;
+}
 
+void Delete(RBTree* Tree,RBTreeNode* node)
+{
+    RBTreeNode *x,*y;
+    if (node->left==nil || node->right==nil)
+        y=node;
+    else
+        y=Successor(Tree,node);
+    if (y->left!=nil)
+        x=y->left;
+    else
+        x=y->right;
 
+    x->parent=y->parent;
+    if (y->parent==nil)
+        Tree=&x;
+    else
+    {
+        if (y==y->parent->left)
+            y->parent->left=x;
+        else
+            y->parent->right=x;
+    }
+    if (y!=node)
+        node->data=y->data;
+    if (y->color==Black)
+        DeleteFixup(Tree,x);
+}
+
+RBTreeNode* SearchByID(RBTree Tree,unsigned int ID)
+{
+    if (Tree!=nil)
+    {
+        if (ID < Tree->data->ID)
+            return SearchByID(Tree->left,ID);
+        else if (ID > Tree->data->ID)
+            return SearchByID(Tree->right,ID);
+        else
+            return Tree;
+    }
+    return nil;
+}
+
+int SearchByName(RBTree Tree,wchar_t* Name,RBTreeNode** ResultArray)
+{
+    int sum=0;
+    if (Tree!=nil)
+    {
+        if (wcscmp(Name,Tree->data->Name)<0)
+            return SearchByName(Tree->left,Name,ResultArray);
+        else if (wcscmp(Name,Tree->data->Name)>0)
+            return SearchByName(Tree->right,Name,ResultArray);
+        else
+        {
+            do
+            {
+                ResultArray[sum++]=Tree;
+                Tree=Tree->left;
+            }while (wcscmp(Name,Tree->data->Name)==0);
+            return sum;
+        }
+    }
+    return 0;
+}
 
 
 
