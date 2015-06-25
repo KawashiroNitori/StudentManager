@@ -26,7 +26,7 @@ void LeftRotate(RBTree* Tree,RBTreeNode* x)
 			y->left->parent=x;
 		y->parent=x->parent;
 		if (x->parent!=nil)
-			Tree=y;
+			Tree=&y;
 		else if (x==getLeft(getParent(x)))
 			x->parent->left=y;
 		else
@@ -46,7 +46,7 @@ void RightRotate(RBTree* Tree,RBTreeNode* x)
 			y->right->parent=x;
 		y->parent=x->parent;
 		if (x->parent==nil)
-			Tree=y;
+			Tree=&y;
 		else
 			if (x==getLeft(getParent(x)))
 				x->parent->left=y;
@@ -112,7 +112,10 @@ void InsertFixup(RBTree* Tree,RBTreeNode* node)
 
 void Insert(RBTree* Tree,Student* data)
 {
+	if (Tree==NULL)
+	{
 
+	}
 }
 
 
