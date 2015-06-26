@@ -305,21 +305,23 @@ RBTreeNode* SearchByID(RBTree Tree,unsigned int ID)
     return nil;
 }
 
-int SearchByName(RBTree Tree,wchar_t* Name,RBTreeNode** ResultArray)
+int SearchByName(RBTree Tree,wchar_t* Name,RBTreeNode** ResultArray,unsigned int maxSize)
 {
-    int sum=0;
+    unsigned int sum=0;
     if (Tree!=nil)
     {
         if (wcscmp(Name,Tree->data->Name)<0)
-            return SearchByName(Tree->left,Name,ResultArray);
+            return SearchByName(Tree->left,Name,ResultArray,maxSize);
         else if (wcscmp(Name,Tree->data->Name)>0)
-            return SearchByName(Tree->right,Name,ResultArray);
+            return SearchByName(Tree->right,Name,ResultArray,maxSize);
         else
         {
             do
             {
-                ResultArray[sum++]=Tree;
-                Tree=Tree->left;
+				if (sum<maxSize)
+                	ResultArray[sum]=Tree;
+               	sum++;
+				Tree=Tree->left;
             }while (wcscmp(Name,Tree->data->Name)==0);
             return sum;
         }
