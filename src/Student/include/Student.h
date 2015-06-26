@@ -11,7 +11,7 @@ typedef struct StudentInfoNode
 {
 	wchar_t InfoName[50];
 	wchar_t data[100];
-	StudentInfoNode* Next;
+	struct StudentInfoNode* Next;
 }StudentInfoNode,*StudentCustomInfo;
 
 typedef struct Student
@@ -24,5 +24,7 @@ typedef struct Student
 	unsigned int CostomInfoCount;
 	StudentCustomInfo CustomInfo;
 } Student;
+
+Student* BuildStudent(unsigned int ID,wchar_t* Name,unsigned int Age,SexType Sex,char* Birthday,unsigned int CustomInfoCount,StudentCustomInfo CustomInfo);
 
 #endif
