@@ -5,5 +5,6 @@
 
 Student* BuildStudent(unsigned int ID,wchar_t* Name,unsigned int Age,SexType Sex,char* Birthday,unsigned int CustomInfoCount,StudentCustomInfo CustomInfo)
 {
-    return NULL;
+
 }
+

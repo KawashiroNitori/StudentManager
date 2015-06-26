@@ -1,7 +1,6 @@
 #ifndef __RBTREE_H__
 #define __RBTREE_H__
 #include "../../Student/include/Student.h"
-#include <stdio.h>
 
 typedef enum ColorType
 {
@@ -22,7 +21,7 @@ typedef struct RBTreeNode
 	ColorType color;
 } RBTreeNode,*RBTree;
 
-RBTreeNode* nil=NULL;
+RBTreeNode* nil;
 
 RBTreeNode* getParent(RBTreeNode* node);
 

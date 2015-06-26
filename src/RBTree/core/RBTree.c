@@ -1,8 +1,9 @@
-#include "../../Student/include/Student.h"
 #include "../include/RBTree.h"
 #include <stdlib.h>
 #include <string.h>
 #include <wchar.h>
+
+RBTreeNode* nil=NULL;
 
 RBTreeNode* getParent(RBTreeNode* node)
 {

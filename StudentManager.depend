@@ -3,17 +3,19 @@
 	<stdio.h>
 	<stdlib.h>
 
-1435231883 d:\programs\2014\studentmanager\src\rbtree\include\rbtree.h
+1435336154 d:\programs\2014\studentmanager\src\rbtree\include\rbtree.h
 	"../../Student/include/Student.h"
-	<stdio.h>
 
-1435331447 d:\programs\2014\studentmanager\src\student\include\student.h
+1435334256 d:\programs\2014\studentmanager\src\student\include\student.h
 	<wchar.h>
 
-1435154581 source:d:\programs\2014\studentmanager\src\student\core\student.c
+1435334504 source:d:\programs\2014\studentmanager\src\student\core\student.c
+	<wchar.h>
+	<stdlib.h>
+	"../include/Student.h"
+	"../../RBTree/include/RBTree.h"
 
-1435247562 source:d:\programs\2014\studentmanager\src\rbtree\core\rbtree.c
-	"../../Student/include/Student.h"
+1435336165 source:d:\programs\2014\studentmanager\src\rbtree\core\rbtree.c
 	"../include/RBTree.h"
 	<stdlib.h>
 	<string.h>
