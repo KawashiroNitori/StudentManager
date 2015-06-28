@@ -1,117 +1,101 @@
 #include "../include/RBTree.h"
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 #include <wchar.h>
 
 RBTreeNode* nil=NULL;
 
-RBTreeNode* getParent(RBTreeNode* node)
-{
-	return node->parent;
-}
-
-RBTreeNode* getLeft(RBTreeNode* node)
-{
-	return node->left;
-}
-
-RBTreeNode* getRight(RBTreeNode* node)
-{
-	return node->right;
-}
-
 void LeftRotate(RBTree* Tree,RBTreeNode* x)
 {
-	if (x->right!=nil)
-	{
-		RBTreeNode* y=getRight(x);
-		x->right=y->left;
-		if (y->left!=nil)
-			y->left->parent=x;
-		y->parent=x->parent;
-		if (x->parent!=nil)
-			Tree=&y;
-		else if (x==getLeft(getParent(x)))
-			x->parent->left=y;
-		else
-			x->parent->right=y;
-		y->left=x;
-		x->parent=y;
-	}
+    RBTreeNode* right=x->right;
+    if ((x->right=right->left))
+        right->left->parent=x;
+    right->left=x;
+    if ((right->parent=x->parent))
+    {
+        if (x==x->parent->right)
+            x->parent->right=right;
+        else
+            x->parent->left=right;
+    }
+    else
+        *Tree=right;
+    x->parent=right;
 }
 
 void RightRotate(RBTree* Tree,RBTreeNode* x)
 {
-	if (x->left!=nil)
-	{
-		RBTreeNode* y=getLeft(x);
-		x->left=y->right;
-		if (y->right!=nil)
-			y->right->parent=x;
-		y->parent=x->parent;
-		if (x->parent==nil)
-			Tree=&y;
-		else
-			if (x==getLeft(getParent(x)))
-				x->parent->left=y;
-			else
-				x->parent->right=y;
-		y->right=x;
-		x->parent=y;
-	}
+    RBTreeNode* left=x->left;
+    if ((x->left=left->right))
+        left->right->parent=x;
+    left->right=x;
+    if ((left->parent=x->parent))
+    {
+        if (x==x->parent->right)
+            x->parent->right=left;
+        else
+            x->parent->left=left;
+    }
+    else
+        *Tree=left;
+    x->parent=left;
 }
 
 void InsertFixup(RBTree* Tree,RBTreeNode* node)
 {
-	RBTreeNode* y;
-	while (getParent(node)->color==Red)
-	{
-		if (getParent(getParent(node))->left==getParent(node))
-		{
-			y=getParent(getParent(node))->right;
-			if (y->color==Red) //case 1
-			{
-				y->color=Black;
-				node->parent->color=Black;
-				node->parent->parent->color=Red;
-				node=node->parent->parent;
-			}
-			else
-			{
-				if (node==node->parent->right) //case 2
-				{
-					node=node->parent;
-					LeftRotate(Tree,node);
-				}
-				node->parent->color=Black; //case 3
-				node->parent->parent->color=Red;
-				RightRotate(Tree,node->parent->parent);
-			}
-		}
-		else
-		{
-			y=getParent(getParent(node))->left;
-			if (y->color==Red)
-			{
-				y->color=Black;
-				node->parent->color=Black;
-				node->parent->parent->color=Red;
-				node=node->parent->parent;
-			}
-			else
-			{
-				if (node==node->parent->left)
-				{
-					node=node->parent;
-					RightRotate(Tree,node);
-				}
-				node->parent->color=Black;
-				node->parent->parent->color=Red;
-				LeftRotate(Tree,node->parent->parent);
-			}
-		}
-	}
-	(*Tree)->color=Black;
+    RBTreeNode* Father,*GrandParent,*Uncle;
+    while ((Father=node->parent)!=nil && Father->color==Red)
+    {
+        GrandParent=Father->parent;
+        if (Father==GrandParent->left)
+        {
+            Uncle=GrandParent->right;
+            if (Uncle!=nil && Uncle->color==Red)
+            {
+                GrandParent->color=Red;
+                Father->color=Black;
+                Uncle->color=Black;
+                node=GrandParent;
+            }
+            else
+            {
+                if (node==Father->right)
+                {
+                    node=Father;
+                    LeftRotate(Tree,node);
+                    Father=node->parent;
+                }
+                Father->color=Black;
+                GrandParent->color=Red;
+                RightRotate(Tree,GrandParent);
+            }
+        }
+        else
+        {
+            Uncle=GrandParent->left;
+            if (Uncle!=nil && Uncle->color==Red)
+            {
+                GrandParent->color=Red;
+                Father->color=Black;
+                Uncle->color=Black;
+                node=GrandParent;
+            }
+            else
+            {
+                if (node==Father->left)
+                {
+                    node=Father;
+                    RightRotate(Tree,node);
+                    Father=node->parent;
+                }
+                Father->color=Black;
+                GrandParent->color=Red;
+                LeftRotate(Tree,GrandParent);
+            }
+        }
+    }
+    (*Tree)->color=Black;
 }
 
 int Insert(RBTree* Tree,Student* Stu,SortMode mode)
@@ -123,6 +107,7 @@ int Insert(RBTree* Tree,Student* Stu,SortMode mode)
     node->data=Stu;
     node->left=nil;
     node->right=nil;
+    node->dup=NULL;
     node->color=Red;
     curNode=*Tree;
     p=nil;
@@ -131,19 +116,21 @@ int Insert(RBTree* Tree,Student* Stu,SortMode mode)
         p=curNode;
         switch (mode)
         {
-        case ID:
-            if (Stu->ID <= p->data->ID)
+        case IDSort:
+            if (Stu->ID < p->data->ID)
                 curNode=curNode->left;
             else if (Stu->ID > p->data->ID)
                 curNode=curNode->right;
             else
                 return -2;  //error:duplicate ID
             break;
-        case Name:
-            if (wcscmp(Stu->Name,p->data->Name)<=0)
+        case NameSort:
+            if (wcscmp(Stu->Name,p->data->Name)<0)
                 curNode=curNode->left;
-            else
+            else if (wcscmp(Stu->Name,p->data->Name)>0)
                 curNode=curNode->right;
+            else
+                curNode=nil;
             break;
         };
     }
@@ -153,7 +140,7 @@ int Insert(RBTree* Tree,Student* Stu,SortMode mode)
     {
         switch (mode)
         {
-        case ID:
+        case IDSort:
             if (Stu->ID < p->data->ID)
                 p->left=node;
             else if (Stu->ID > p->data->ID)
@@ -161,11 +148,27 @@ int Insert(RBTree* Tree,Student* Stu,SortMode mode)
             else
                 return -2;  //error:duplicate ID
             break;
-        case Name:
-            if (wcscmp(Stu->Name,p->data->Name)<=0)
+        case NameSort:
+            if (wcscmp(Stu->Name,p->data->Name)<0)
                 p->left=node;
-            else
+            else if (wcscmp(Stu->Name,p->data->Name)>0)
                 p->right=node;
+            else
+            {
+                DupNameList* temp=(DupNameList*)malloc(sizeof(DupNameList));
+                temp->node=node;
+                temp->Next=NULL;
+                if (p->dup==NULL)
+                    p->dup=temp;
+                else
+                {
+                    DupNameList* past=p->dup;
+                    while (past->Next!=NULL)
+                        past=past->Next;
+                    past->Next=temp;
+                }
+                return 0;
+            }
             break;
         };
     }
@@ -175,18 +178,14 @@ int Insert(RBTree* Tree,Student* Stu,SortMode mode)
     return 0;
 }
 
-RBTreeNode* Successor(RBTree* Tree,RBTreeNode* node)
+RBTreeNode* Successor(RBTreeNode* node)
 {
     if (node->right!=nil)
     {
-        RBTreeNode* p=nil;
-        RBTreeNode* q=node->right;
+        RBTreeNode* p=node->right;
         while (p->left!=nil)
-        {
-            q=p;
             p=p->left;
-        }
-        return q;
+        return p;
     }
     else
     {
@@ -200,68 +199,78 @@ RBTreeNode* Successor(RBTree* Tree,RBTreeNode* node)
     }
 }
 
-void DeleteFixup(RBTree* Tree,RBTreeNode* node)
+void DeleteFixup(RBTree* Tree,RBTreeNode* node,RBTreeNode* x)
 {
-    while (node!=*Tree && node->color==Black)
+    RBTreeNode* Brother;
+    while ((x==nil || x->color==Black) && x!=*Tree)
     {
-        if (node==node->parent->left)
+        if (x==node->left)
         {
-            RBTreeNode* w=node->parent->right;  //brother node
-            if (w->color==Red)
+            Brother=node->right;
+            if (Brother->color==Red) //Case 1:Brother node is red.
             {
-                w->color=Black;
-                node->parent->color=Red;
-                LeftRotate(Tree,node->parent);
-                w=node->parent->right;
+                Brother->color=Black;
+                node->color=Red;
+                LeftRotate(Tree,node);
+                Brother=node->right;
             }
-            if (w->left->color==Black && w->right->color==Black)    //case 2:both child are black
+            if ((Brother->left==nil || Brother->left->color==Black) && (Brother->right==nil || Brother->right->color==Black))
             {
-                w->color=Red;
+                Brother->color=Red;
+                x=node;
                 node=node->parent;
             }
-            else if (w->right->color==Black)    //case 3:left child is red,right child is black
+            else
             {
-                w->color=Red;
-                w->left->color=Black;
-                RightRotate(Tree,w);
-                w=node->parent->right;
+                if (Brother->right==nil || Brother->color==Black)
+                {
+                    Brother->left->color=Black;
+                    Brother->color=Red;
+                    RightRotate(Tree,Brother);
+                    Brother=node->right;
+                }
+                Brother->color=node->color;
+                node->color=Black;
+                Brother->right->color=Black;
+                LeftRotate(Tree,node);
+                x=*Tree;
             }
-            w->color=node->parent->color;   //case 4:right child is red;
-            node->parent->color=Black;
-            w->right->color=Black;
-            LeftRotate(Tree,node->parent);
-            node=*Tree;
         }
         else
         {
-            RBTreeNode* w=node->parent->left;
-            if (w->color==Red)
+            Brother=node->left;
+            if (Brother->color==Red)
             {
-                w->color=Black;
-                node->parent->color=Red;
-                RightRotate(Tree,node->parent);
-                w=node->parent->left;
+                Brother->color=Black;
+                node->color=Red;
+                RightRotate(Tree,node);
+                Brother=node->left;
             }
-            if (w->left->color==Black && w->right->color==Black)
+            if ((Brother->left==nil || Brother->left->color==Black) && (Brother->right==nil || Brother->right->color==Black))
             {
-                w->color=Red;
+                Brother->color=Red;
+                x=node;
                 node=node->parent;
             }
-            else if (w->left->color==Black)
+            else
             {
-                w->color=Red;
-                w->right->color=Black;
-                LeftRotate(Tree,w);
-                w=node->parent->left;
+                if (Brother->left==nil || Brother->left->color==Black)
+                {
+                    Brother->right->color=Black;
+                    Brother->color=Red;
+                    LeftRotate(Tree,Brother);
+                    Brother=node->left;
+                }
+                Brother->color=node->color;
+                node->color=Black;
+                Brother->left->color=Black;
+                RightRotate(Tree,node);
+                x=*Tree;
             }
-            w->color=node->parent->color;
-            node->parent->color=Black;
-            w->left->color=Black;
-            RightRotate(Tree,node->parent);
-            node=*Tree;
         }
     }
-    node->color=Black;
+    if (x!=nil)
+        x->color=Black;
 }
 
 void Delete(RBTree* Tree,RBTreeNode* node)
@@ -270,15 +279,18 @@ void Delete(RBTree* Tree,RBTreeNode* node)
     if (node->left==nil || node->right==nil)
         y=node;
     else
-        y=Successor(Tree,node);
+        y=Successor(node);
+
     if (y->left!=nil)
         x=y->left;
     else
         x=y->right;
 
-    x->parent=y->parent;
+    if (x!=nil)
+        x->parent=y->parent;
+
     if (y->parent==nil)
-        Tree=&x;
+        *Tree=x;
     else
     {
         if (y==y->parent->left)
@@ -289,7 +301,22 @@ void Delete(RBTree* Tree,RBTreeNode* node)
     if (y!=node)
         node->data=y->data;
     if (y->color==Black)
-        DeleteFixup(Tree,x);
+        DeleteFixup(Tree,y->parent,x);
+    if (y->data!=NULL)
+        DestroyStudent(y->data);//destroy student
+    if (y->dup!=NULL)
+    {
+        DupNameList* temp=y->dup;
+        DupNameList* prev=NULL;
+        while (temp->Next!=NULL)
+        {
+            prev=temp;
+            temp=temp->Next;
+            free(prev);
+        }
+        free(temp);
+    }
+    free(y);    //destroy Tree Node
 }
 
 RBTreeNode* SearchByID(RBTree Tree,unsigned int ID)
@@ -317,18 +344,60 @@ int SearchByName(RBTree Tree,wchar_t* Name,RBTreeNode** ResultArray,unsigned int
             return SearchByName(Tree->right,Name,ResultArray,maxSize);
         else
         {
-            do
+            if (sum<maxSize)
+                ResultArray[sum++]=Tree;
+            if (Tree->dup!=NULL)
             {
-				if (sum<maxSize)
-                	ResultArray[sum]=Tree;
-               	sum++;
-				Tree=Tree->left;
-            }while (wcscmp(Name,Tree->data->Name)==0);
+                DupNameList* temp=Tree->dup;
+                if (sum<maxSize)
+                    ResultArray[sum++]=temp->node;
+                while (temp->Next!=NULL)
+                {
+                    temp=temp->Next;
+                    if (sum<maxSize)
+                        ResultArray[sum]=temp->node;
+                    sum++;
+                }
+            }
             return sum;
         }
     }
     return 0;
 }
+
+void InOrderTranverse(RBTree Tree,void (*visitor)(RBTreeNode* node))
+{
+    if (Tree!=nil)
+    {
+        InOrderTranverse(Tree->left,visitor);
+        visitor(Tree);
+        InOrderTranverse(Tree->right,visitor);
+    }
+}
+
+void DestroyRBTree(RBTree Tree)
+{
+    while (Tree!=NULL && Tree!=nil)
+        Delete(&Tree,Tree);
+}
+
+void PrintNode(RBTreeNode* node)
+{
+    printf("%d %ls\n",node->data->ID,node->data->Name);
+    if (node->dup!=NULL)
+    {
+        DupNameList* temp=node->dup;
+        while (temp!=NULL)
+        {
+            printf("%d %ls\n",temp->node->data->ID,temp->node->data->Name);
+            temp=temp->Next;
+        }
+    }
+}
+
+
+
+
 
 
 

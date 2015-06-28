@@ -9,7 +9,7 @@ typedef enum SexType
 
 typedef struct StudentInfoNode
 {
-	wchar_t InfoName[50];
+	wchar_t Name[50];
 	wchar_t data[100];
 	struct StudentInfoNode* Next;
 }StudentInfoNode,*StudentCustomInfo;
@@ -20,11 +20,19 @@ typedef struct Student
     wchar_t Name[20];
     unsigned int Age;
     SexType Sex;
-    char Birthday[8];
-	unsigned int CostomInfoCount;
+    char Birthday[9];
+	unsigned int CustomInfoCount;
 	StudentCustomInfo CustomInfo;
 } Student;
 
-//Student* BuildStudent(unsigned int ID,wchar_t* Name,unsigned int Age,SexType Sex,char* Birthday,unsigned int CustomInfoCount,StudentCustomInfo CustomInfo);
+Student* BuildStudent(unsigned int ID,wchar_t* Name,unsigned int Age,SexType Sex,char* Birthday);
+
+void DestroyStudent(Student* Student);
+
+int InsertInfo(Student* Student,wchar_t* Name,wchar_t* Info);
+
+StudentInfoNode* SearchInfo(Student* Student,wchar_t* Name);
+
+int DeleteInfo(Student* Student,wchar_t* Name);
 
 #endif

@@ -49,3 +49,6 @@ Temporary Items
 #object&binary folder
 /obj/
 /bin/
+
+*.txt
+

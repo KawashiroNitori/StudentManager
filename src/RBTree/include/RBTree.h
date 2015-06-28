@@ -9,7 +9,7 @@ typedef enum ColorType
 
 typedef enum SortMode
 {
-    ID,Name
+    IDSort,NameSort
 }SortMode;
 
 typedef struct RBTreeNode
@@ -18,16 +18,17 @@ typedef struct RBTreeNode
 	struct RBTreeNode* left;
 	struct RBTreeNode* right;
 	struct Student* data;
+	struct DupNameList* dup;
 	ColorType color;
 } RBTreeNode,*RBTree;
 
+typedef struct DupNameList
+{
+    struct RBTreeNode* node;
+    struct DupNameList* Next;
+} DupNameList;
+
 RBTreeNode* nil;
-
-RBTreeNode* getParent(RBTreeNode* node);
-
-RBTreeNode* getLeft(RBTreeNode* node);
-
-RBTreeNode* getRight(RBTreeNode* node);
 
 void LeftRotate(RBTree* Tree,RBTreeNode* x);
 
@@ -37,15 +38,21 @@ void InsertFixup(RBTree* Tree,RBTreeNode* node);
 
 int Insert(RBTree* Tree,Student* data,SortMode mode);
 
-RBTreeNode* Successor(RBTree* Tree,RBTreeNode* node);
+RBTreeNode* Successor(RBTreeNode* node);
 
-void DeleteFixup(RBTree* Tree,RBTreeNode* node);
+void DeleteFixup(RBTree* Tree,RBTreeNode* node,RBTreeNode* x);
 
 void Delete(RBTree* Tree,RBTreeNode* node);
 
 RBTreeNode* SearchByID(RBTree Tree,unsigned int ID);
 
 int SearchByName(RBTree Tree,wchar_t* Name,RBTreeNode** ResultArray,unsigned int maxSize);
+
+void InOrderTranverse(RBTree Tree,void (*visitor)(RBTreeNode* node));
+
+void DestroyRBTree(RBTree Tree);
+
+void PrintNode(RBTreeNode* node);
 
 #endif
 
