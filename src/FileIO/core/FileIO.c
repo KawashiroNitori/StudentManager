@@ -6,6 +6,17 @@
 #include "../../RBTree/include/RBTree.h"
 #include "../../Student/include/Student.h"
 
+int atoi(char* str,int l,int r)
+{
+	int i,sum=0;
+	for (i=l;i<=r;i++)
+	{
+		sum+=str[i]-'0';
+		sum*=10;
+	}
+	return sum;
+}
+
 unsigned int getAge(char* bir)
 {
 	time_t timep;
@@ -13,25 +24,13 @@ unsigned int getAge(char* bir)
 	struct tm* p;
 	time(&timep);
 	p=gmtime(&timep);
-	int date=(1900+p->tm_year)*10000+(1+p->tm_mon)*100+(p->tm_mday);
 	int i,age;
 	int year=0,month=0,day=0;
 
-	for (i=0;i<=3;i++)
-	{
-		year+=bir[i]-'0';
-		year*=10;
-	}
-	for (i=4;i<=5;i++)
-	{
-		month+=bir[i]-'0';
-		month*=10;
-	}
-	for (i=6;i<=7;i++)
-	{
-		day+=bir[i]-'0';
-		day*=10;
-	}
+	year=atoi(bir,0,3);
+	month=atoi(bir,4,5);
+	day=atoi(bir,6,7);
+
 	age=1900+p->tm_year-year;
 	month=1+p->tm_mon-month;
 	day=p->tm_mday-day;

@@ -1,6 +1,8 @@
 #ifndef __FILEIO_H__
 #define __FILEIO_H__
 
+int atoi(char* str,int l,int r);
+
 unsigned int getAge(char* str);
 
 int LoadDatabase(char* filename,RBTree IDTree,RBTree NameTree);
