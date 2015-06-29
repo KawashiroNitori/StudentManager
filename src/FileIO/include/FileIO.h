@@ -1,9 +1,11 @@
 #ifndef __FILEIO_H__
 #define __FILEIO_H__
 
-int LoadDatabase(char* filename);
+unsigned int getAge(char* str);
 
-int SaveDatabase(char* filename);
+int LoadDatabase(char* filename,RBTree IDTree,RBTree NameTree);
+
+int SaveDatabase(RBTree Tree,char* filename);
 
 int LoadStudent(FILE* file);
 

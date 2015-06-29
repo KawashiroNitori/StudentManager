@@ -21,7 +21,7 @@ typedef struct Student
     unsigned int Age;
     SexType Sex;
     char Birthday[9];
-	unsigned int CustomInfoCount;
+	unsigned char CustomInfoCount;
 	StudentCustomInfo CustomInfo;
 } Student;
 
