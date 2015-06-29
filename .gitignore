@@ -51,4 +51,5 @@ Temporary Items
 /bin/
 
 *.txt
-
+*.dat
+*.db
