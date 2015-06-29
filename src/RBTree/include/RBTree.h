@@ -1,6 +1,7 @@
 #ifndef __RBTREE_H__
 #define __RBTREE_H__
 #include "../../Student/include/Student.h"
+#include <stdio.h>
 
 typedef enum ColorType
 {
@@ -38,7 +39,9 @@ void InsertFixup(RBTree* Tree,RBTreeNode* node);
 
 int Insert(RBTree* Tree,Student* data,SortMode mode);
 
-RBTreeNode* Successor(RBTreeNode* node);
+RBTreeNode *MinImum(RBTree *rbTree);
+
+RBTreeNode* Successor(RBTreeNode* x);
 
 void DeleteFixup(RBTree* Tree,RBTreeNode* node,RBTreeNode* x);
 
@@ -48,9 +51,11 @@ RBTreeNode* SearchByID(RBTree Tree,unsigned int ID);
 
 int SearchByName(RBTree Tree,wchar_t* Name,RBTreeNode** ResultArray,unsigned int maxSize);
 
+void PreOrderTranverse(FILE* file,RBTree Tree,int (*visitor)(FILE* file,RBTreeNode* node));
+
 void InOrderTranverse(RBTree Tree,void (*visitor)(RBTreeNode* node));
 
-void DestroyRBTree(RBTree Tree);
+void DestroyRBTree(RBTree* Tree);
 
 void PrintNode(RBTreeNode* node);
 

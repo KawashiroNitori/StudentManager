@@ -1,4 +1,5 @@
 #include "../include/RBTree.h"
+#include "../../FileIO/include/FileIO.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -8,38 +9,51 @@ RBTreeNode* nil=NULL;
 
 void LeftRotate(RBTree* Tree,RBTreeNode* x)
 {
-    RBTreeNode* right=x->right;
-    if ((x->right=right->left))
-        right->left->parent=x;
-    right->left=x;
-    if ((right->parent=x->parent))
-    {
-        if (x==x->parent->right)
-            x->parent->right=right;
-        else
-            x->parent->left=right;
-    }
-    else
-        *Tree=right;
-    x->parent=right;
+	RBTreeNode *y;
+
+	y = x->right;
+	x->right = y->left;
+	if (y->left != nil) {
+		y->left->parent = x;
+	}
+	y->parent = x->parent;
+	if (x->parent == nil) {
+		*Tree = y;
+	} else {
+		if (x->parent->left == x) {
+			x->parent->left = y;
+		} else {
+			x->parent->right = y;
+		}
+	}
+	y->left = x;
+	x->parent = y;
 }
 
 void RightRotate(RBTree* Tree,RBTreeNode* x)
 {
-    RBTreeNode* left=x->left;
-    if ((x->left=left->right))
-        left->right->parent=x;
-    left->right=x;
-    if ((left->parent=x->parent))
-    {
-        if (x==x->parent->right)
-            x->parent->right=left;
-        else
-            x->parent->left=left;
-    }
-    else
-        *Tree=left;
-    x->parent=left;
+	RBTreeNode *y;
+
+	y = x->left;
+
+	x->left = y->right;
+	if (y->right != nil) {
+		y->right->parent = x;
+	}
+
+	y->parent = x->parent;
+	if (x->parent == nil) {
+		*Tree = y;
+	} else {
+		if (x->parent->left == x) {
+			x->parent->left = y;
+		} else {
+			x->parent->right = y;
+		}
+	}
+
+	y->right = x;
+	x->parent = y;
 }
 
 void InsertFixup(RBTree* Tree,RBTreeNode* node)
@@ -178,25 +192,34 @@ int Insert(RBTree* Tree,Student* Stu,SortMode mode)
     return 0;
 }
 
-RBTreeNode* Successor(RBTreeNode* node)
+RBTreeNode *MinImum(RBTree *rbTree)
 {
-    if (node->right!=nil)
-    {
-        RBTreeNode* p=node->right;
-        while (p->left!=nil)
-            p=p->left;
-        return p;
-    }
-    else
-    {
-        RBTreeNode* y=node->parent;
-        while (y!=nil && node==y->right)
-        {
-            node=y;
-            y=y->parent;
-        }
-        return y;
-    }
+	RBTreeNode *curNode, *targetNode;
+
+	curNode = *rbTree;
+	targetNode = NULL;
+	while (curNode != NULL) {
+		targetNode = curNode;
+		curNode = curNode->left;
+	}
+	return targetNode;
+}
+
+RBTreeNode* Successor(RBTreeNode* x)
+{
+	RBTreeNode *targetNode;
+
+	if (x == NULL) return NULL;
+	if (x->right != NULL) {
+		targetNode = MinImum(&(x->right));
+	} else {
+		while ( x->parent != NULL && x->parent->left != x) {
+			x  = x->parent;
+		}
+		targetNode = x->parent;
+	}
+
+	return targetNode;
 }
 
 void DeleteFixup(RBTree* Tree,RBTreeNode* node,RBTreeNode* x)
@@ -275,38 +298,40 @@ void DeleteFixup(RBTree* Tree,RBTreeNode* node,RBTreeNode* x)
 
 void Delete(RBTree* Tree,RBTreeNode* node)
 {
-    RBTreeNode *x,*y;
+    RBTreeNode *realDel,*child;
+
     if (node->left==nil || node->right==nil)
-        y=node;
+        realDel=node;
     else
-        y=Successor(node);
+        realDel=Successor(node);
 
-    if (y->left!=nil)
-        x=y->left;
+    if (realDel->left!=nil)
+        child=realDel->left;
     else
-        x=y->right;
+        child=realDel->right;
 
-    if (x!=nil)
-        x->parent=y->parent;
+    if (child!=nil)
+        child->parent=realDel->parent;
 
-    if (y->parent==nil)
-        *Tree=x;
+    if (realDel->parent==nil)
+        *Tree=child;
     else
     {
-        if (y==y->parent->left)
-            y->parent->left=x;
+        if (realDel->parent->left==realDel)
+            realDel->parent->left=child;
         else
-            y->parent->right=x;
+            realDel->parent->right=child;
     }
-    if (y!=node)
-        node->data=y->data;
-    if (y->color==Black)
-        DeleteFixup(Tree,y->parent,x);
-    if (y->data!=NULL)
-        DestroyStudent(y->data);//destroy student
-    if (y->dup!=NULL)
+
+    if (node!=realDel)
+        node->data=realDel->data;
+
+    if (realDel->color==Black)
+        DeleteFixup(Tree,realDel->parent,child);
+
+    if (realDel->dup!=NULL)
     {
-        DupNameList* temp=y->dup;
+        DupNameList* temp=realDel->dup;
         DupNameList* prev=NULL;
         while (temp->Next!=NULL)
         {
@@ -316,7 +341,7 @@ void Delete(RBTree* Tree,RBTreeNode* node)
         }
         free(temp);
     }
-    free(y);    //destroy Tree Node
+    free(realDel);    //destroy Tree Node
 }
 
 RBTreeNode* SearchByID(RBTree Tree,unsigned int ID)
@@ -365,6 +390,16 @@ int SearchByName(RBTree Tree,wchar_t* Name,RBTreeNode** ResultArray,unsigned int
     return 0;
 }
 
+void PreOrderTranverse(FILE* file,RBTree Tree,int (*visitor)(FILE* file,RBTreeNode* node))
+{
+    if (Tree!=nil)
+    {
+        PreOrderTranverse(file,Tree->left,visitor);
+        visitor(file,Tree);
+        PreOrderTranverse(file,Tree->right,visitor);
+    }
+}
+
 void InOrderTranverse(RBTree Tree,void (*visitor)(RBTreeNode* node))
 {
     if (Tree!=nil)
@@ -375,10 +410,15 @@ void InOrderTranverse(RBTree Tree,void (*visitor)(RBTreeNode* node))
     }
 }
 
-void DestroyRBTree(RBTree Tree)
+void DestroyRBTree(RBTree* Tree)
 {
-    while (Tree!=NULL && Tree!=nil)
-        Delete(&Tree,Tree);
+    while (*Tree!=nil)
+    {
+        printf("Deleting %d\n",(*Tree)->data->ID);/*
+        if ((*Tree)->data!=NULL)
+            DestroyStudent((*Tree)->data);*/
+        Delete(Tree,*Tree);
+    }
 }
 
 void PrintNode(RBTreeNode* node)

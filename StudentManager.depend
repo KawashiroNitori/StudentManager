@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1435477628 source:d:\programs\2014\studentmanager\src\main\core\main.c
+1435592424 source:d:\programs\2014\studentmanager\src\main\core\main.c
 	<stdio.h>
 	<stdlib.h>
 	<wchar.h>
@@ -8,10 +8,11 @@
 	"../../Student/include/Student.h"
 	"../../FileIO/include/FileIO.h"
 
-1435503173 d:\programs\2014\studentmanager\src\rbtree\include\rbtree.h
+1435593606 d:\programs\2014\studentmanager\src\rbtree\include\rbtree.h
 	"../../Student/include/Student.h"
+	<stdio.h>
 
-1435485705 d:\programs\2014\studentmanager\src\student\include\student.h
+1435568524 d:\programs\2014\studentmanager\src\student\include\student.h
 	<wchar.h>
 
 1435503461 source:d:\programs\2014\studentmanager\src\student\core\student.c
@@ -21,19 +22,35 @@
 	"../include/Student.h"
 	"../../RBTree/include/RBTree.h"
 
-1435503451 source:d:\programs\2014\studentmanager\src\rbtree\core\rbtree.c
+1435593613 source:d:\programs\2014\studentmanager\src\rbtree\core\rbtree.c
 	"../include/RBTree.h"
+	"../../FileIO/include/FileIO.h"
 	<stdlib.h>
 	<stdio.h>
 	<string.h>
 	<wchar.h>
 
-1435474266 source:d:\programs\2014\studentmanager\src\fileio\core\fileio.c
+1435580596 source:d:\programs\2014\studentmanager\src\fileio\core\fileio.c
 	<stdio.h>
 	<wchar.h>
+	<string.h>
+	<time.h>
 	<stdlib.h>
 	"../../RBTree/include/RBTree.h"
 	"../../Student/include/Student.h"
+	"../include/FileIO.h"
 
-1435501789 d:\programs\2014\studentmanager\src\fileio\include\fileio.h
+1435577212 d:\programs\2014\studentmanager\src\fileio\include\fileio.h
+
+1435568524 source:d:\programs\2014\studentmanager\src\ui\core\ui.c
+	<wchar.h>
+	<stdio.h>
+	<string.h>
+	"../include/UI.h"
+
+1435568524 d:\programs\2014\studentmanager\src\ui\include\ui.h
+	<stdio.h>
+	"../../RBTree/include/RBTree.h"
+	"../../Student/include/Student.h"
+	"../../FileIO/include/FileIO.h"
 

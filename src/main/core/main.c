@@ -16,7 +16,7 @@ int main()
     //char Birthday[9];
     FILE* file=fopen("data.txt","rt");
     RBTree IDTree=NULL,NameTree=NULL;
-    Student* temp;
+    Student* temp;/*
     for (i=1;i<=34;i++)
     {
         fscanf(file,"%d%ls",&ID,Name);
@@ -24,16 +24,21 @@ int main()
         Insert(&IDTree,temp,IDSort);
         Insert(&NameTree,temp,NameSort);
         printf("%d %ls\n",ID,Name);
-    }
+    }*/
+
+    printf("%d\n",LoadDatabase("database.dat",&IDTree,&NameTree));
     printf("\n");
-    InOrderTranverse(NameTree,PrintNode);
+    InOrderTranverse(IDTree,PrintNode);
+    SaveDatabase(IDTree,"database1.dat");
+    printf("\n");
     while (1)
     {
-        scanf("%ls",Name);
-        RBTreeNode* a[40];
-        int sum=SearchByName(NameTree,Name,a,40);
-        for (i=0;i<sum;i++)
-            printf("%d %d %ls %s\n",i,a[i]->data->ID,a[i]->data->Name,a[i]->data->Birthday);
+        scanf("%d",&ID);
+        Delete(&IDTree,SearchByID(IDTree,ID));
+        InOrderTranverse(IDTree,PrintNode);
     }
+    //DestroyRBTree(&IDTree);
+    printf("\n");
+    //DestroyRBTree(&NameTree);
     return 0;
 }
