@@ -18,7 +18,7 @@ int aToi(char* str,int l,int r)
 	return sum;
 }
 
-unsigned int getAge(char* bir)
+int getAge(char* bir)
 {
 	time_t timep;
 	struct tm* p;
@@ -27,9 +27,14 @@ unsigned int getAge(char* bir)
 	int age;
 	int year=0,month=0,day=0;
 
+	if (strlen(bir)!=8)
+        return -1;
 	year=aToi(bir,0,3);
 	month=aToi(bir,4,5);
 	day=aToi(bir,6,7);
+
+	if (year<1900 || year>1900+p->tm_year || month<1 || month>12 || day<1 || day>31)
+        return -1;
 
 	age=1900+p->tm_year-year;
 	month=1+p->tm_mon-month;

@@ -362,7 +362,7 @@ RBTreeNode* SearchByID(RBTree Tree,unsigned int ID)
 
 int SearchByName(RBTree Tree,wchar_t* Name,RBTreeNode** ResultArray,unsigned int maxSize)
 {
-    unsigned int sum=0;
+    int sum=0;
     if (Tree!=nil)
     {
         if (wcscmp(Name,Tree->data->Name)<0)

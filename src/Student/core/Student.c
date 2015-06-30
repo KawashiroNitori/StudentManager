@@ -46,14 +46,13 @@ int InsertInfo(Student* Student,wchar_t* Name,wchar_t* Info)
     Student->CustomInfoCount++;
     StudentInfoNode* node=Student->CustomInfo;
     if (node==NULL)
-        node=NewInfo;
+        Student->CustomInfo=NewInfo;
     else
     {
         while (node->Next!=NULL)
             node=node->Next;
         node->Next=NewInfo;
     }
-    Student->CustomInfo=node;
     return 0;
 }
 
@@ -94,6 +93,16 @@ int DeleteInfo(Student* Student,wchar_t* Name)
     }
     Student->CustomInfoCount--;
     free(node);
+    return 0;
+}
+
+int ChangeInfo(Student* Student,wchar_t* OldName,wchar_t* NewName,wchar_t* NewData)
+{
+    StudentInfoNode* node=SearchInfo(Student,OldName);
+    if (node==NULL)
+        return -1;
+    wcscpy(node->Name,NewName);
+    wcscpy(node->data,NewData);
     return 0;
 }
 

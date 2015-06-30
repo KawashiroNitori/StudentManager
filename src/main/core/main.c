@@ -11,7 +11,7 @@
 int main()
 {
     char filename[100];
-    int cmd;
+    int sum,cmd;
     RBTree IDTree=NULL,NameTree=NULL;
     setlocale(LC_ALL,"");
     printStartMenu();
@@ -21,14 +21,19 @@ int main()
         wprintf(L"请输入文件名：\n");
         scanf("%s",filename);
         strcat(filename,".db");
-        int sum=LoadDatabase(filename,&IDTree,&NameTree);
+        sum=LoadDatabase(filename,&IDTree,&NameTree);
+        wprintf(L"正在尝试读取数据...\n");
         if (sum<0)
         {
-            wprintf(L"读取失败。\n");
+            wprintf(L"读取失败。\n\n");
+            system("pause");
             return 0;
         }
         else
+        {
+            system("cls");
             wprintf(L"已读取%d名学生信息。\n",sum);
+        }
     }
     else
     {
@@ -40,26 +45,30 @@ int main()
     while(1)
     {
         printMainMenu();
-        inputCorrectInt(&cmd,1,6);
+        inputCorrectInt(&cmd,1,5);
         switch (cmd)
         {
         case 1: //output information
             printAllStudent(IDTree);
+            system("cls");
             break;
-        case 2:
-
+        case 2: //search student
+            printSearchStudent(IDTree,NameTree);
+            system("cls");
             break;
         case 3:
-
+            printAddStudent(IDTree,NameTree);
+            system("cls");
             break;
         case 4:
-
+            if (printSaveAndExit(IDTree,filename))
+                return 0;
+            system("cls");
             break;
         case 5:
-
-            break;
-        case 6:
-
+            if (printDirectExit())
+                return 0;
+            system("cls");
             break;
         };
     }/*

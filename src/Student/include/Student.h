@@ -35,4 +35,6 @@ StudentInfoNode* SearchInfo(Student* Student,wchar_t* Name);
 
 int DeleteInfo(Student* Student,wchar_t* Name);
 
+int ChangeInfo(Student* Student,wchar_t* OldName,wchar_t* NewName,wchar_t* NewData);
+
 #endif
