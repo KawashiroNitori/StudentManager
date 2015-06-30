@@ -9,9 +9,13 @@ void printStartMenu();
 
 void printMainMenu();
 
+void printCmdErr();
 
+void inputCorrectInt(int* cmd,int l,int r);
 
+void printAllStudent(RBTree Tree);
 
+void printSingleStudent(RBTreeNode* node);
 
 
 

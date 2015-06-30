@@ -79,6 +79,7 @@ void InsertFixup(RBTree* Tree,RBTreeNode* node)
                     node=Father;
                     LeftRotate(Tree,node);
                     Father=node->parent;
+                    GrandParent=Father->parent;
                 }
                 Father->color=Black;
                 GrandParent->color=Red;
@@ -102,6 +103,7 @@ void InsertFixup(RBTree* Tree,RBTreeNode* node)
                     node=Father;
                     RightRotate(Tree,node);
                     Father=node->parent;
+                    GrandParent=Father->parent;
                 }
                 Father->color=Black;
                 GrandParent->color=Red;
@@ -394,8 +396,8 @@ void PreOrderTranverse(FILE* file,RBTree Tree,int (*visitor)(FILE* file,RBTreeNo
 {
     if (Tree!=nil)
     {
-        PreOrderTranverse(file,Tree->left,visitor);
         visitor(file,Tree);
+        PreOrderTranverse(file,Tree->left,visitor);
         PreOrderTranverse(file,Tree->right,visitor);
     }
 }
