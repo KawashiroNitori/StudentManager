@@ -43,6 +43,10 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/Student/include/Student.h" />
+		<Unit filename="src/UI/core/UI.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/UI/include/UI.h" />
 		<Unit filename="src/main/core/main.c">
 			<Option compilerVar="CC" />
 		</Unit>

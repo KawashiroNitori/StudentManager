@@ -54,3 +54,60 @@
 	"../../Student/include/Student.h"
 	"../../FileIO/include/FileIO.h"
 
+1435594202 source:e:\studentmanager-master\src\fileio\core\fileio.c
+	<stdio.h>
+	<wchar.h>
+	<string.h>
+	<time.h>
+	<stdlib.h>
+	"../../RBTree/include/RBTree.h"
+	"../../Student/include/Student.h"
+	"../include/FileIO.h"
+
+1435594202 e:\studentmanager-master\src\rbtree\include\rbtree.h
+	"../../Student/include/Student.h"
+	<stdio.h>
+
+1435594202 e:\studentmanager-master\src\student\include\student.h
+	<wchar.h>
+
+1435594202 e:\studentmanager-master\src\fileio\include\fileio.h
+
+1435650799 source:e:\studentmanager-master\src\main\core\main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<wchar.h>
+	<locale.h>
+	"../../RBTree/include/RBTree.h"
+	"../../Student/include/Student.h"
+	"../../FileIO/include/FileIO.h"
+	"../../UI/include/UI.h"
+
+1435643874 source:e:\studentmanager-master\src\rbtree\core\rbtree.c
+	"../include/RBTree.h"
+	"../../FileIO/include/FileIO.h"
+	<stdlib.h>
+	<stdio.h>
+	<string.h>
+	<wchar.h>
+
+1435594202 source:e:\studentmanager-master\src\student\core\student.c
+	<wchar.h>
+	<stdlib.h>
+	<string.h>
+	"../include/Student.h"
+	"../../RBTree/include/RBTree.h"
+
+1435650293 source:e:\studentmanager-master\src\ui\core\ui.c
+	<wchar.h>
+	<stdio.h>
+	<string.h>
+	"../include/UI.h"
+
+1435649522 e:\studentmanager-master\src\ui\include\ui.h
+	<stdio.h>
+	"../../RBTree/include/RBTree.h"
+	"../../Student/include/Student.h"
+	"../../FileIO/include/FileIO.h"
+
